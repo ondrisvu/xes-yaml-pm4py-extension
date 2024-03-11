@@ -26,6 +26,24 @@ import yaml
 from yaml import SafeLoader, FullLoader
 from yaml.cyaml import CSafeLoader, CFullLoader
 
+from memory_profiler import profile as space_comp_profiler
+
+
+def conditional_profile(func):
+    def profile_wrapper(*args, **kwargs):  # Accept potential arguments
+        if exec_utils.get_param_value(
+            Parameters.MEASURE_SPACE_COMPLEXITY,
+            kwargs.get("parameters"),
+            constants.MEASURE_SPACE_COMPLEXITY,
+        ):
+            # print(f"[YAML SPACE] measuring")
+            return space_comp_profiler(func)(*args, **kwargs)  # Apply if True
+        else:
+            # print(f"[YAML SPACE] NOT measuring")
+            return func(*args, **kwargs)  # Original function if False
+
+    return profile_wrapper
+
 
 class LoaderType(Enum):
     SAFE_PYYAML = SafeLoader
@@ -42,7 +60,7 @@ class Parameters(Enum):
     SHOW_PROGRESS_BAR = "show_progress_bar"
     DECOMPRESS_SERIALIZATION = "decompress_serialization"
     ENCODING = "encoding"
-
+    MEASURE_SPACE_COMPLEXITY = "measure_space_complexity"
 
 def apply(
     filename: str,

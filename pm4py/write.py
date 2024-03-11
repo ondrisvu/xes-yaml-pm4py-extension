@@ -81,6 +81,17 @@ def write_yaml(
 
     yaml_exporter.apply(log, file_path, parameters=parameters, log_header=log_header)
 
+def append_xes(original_file_path, to_be_appended_log):
+    from pm4py.objects.log.importer.xes import importer as xes_importer
+
+    log = xes_importer.apply(original_file_path)
+
+    for trace in to_be_appended_log:
+        log.append(trace)
+
+    from pm4py.objects.log.exporter.xes import exporter as xes_exporter
+
+    xes_exporter.apply(log, original_file_path)
 
 def append_yaml(
     log: Union[EventLog, pd.DataFrame],

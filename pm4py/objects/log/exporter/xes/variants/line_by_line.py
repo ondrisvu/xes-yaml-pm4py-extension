@@ -23,11 +23,30 @@ from pm4py.objects.log.util import xes as xes_util
 from pm4py.util import exec_utils, constants
 from xml.sax.saxutils import quoteattr
 
+from memory_profiler import profile as space_comp_profiler
+
+
+def conditional_profile(func):
+    def profile_wrapper(*args, **kwargs):  # Accept potential arguments
+        if exec_utils.get_param_value(
+            Parameters.MEASURE_SPACE_COMPLEXITY,
+            kwargs.get("parameters"),
+            constants.MEASURE_SPACE_COMPLEXITY,
+        ):
+            # print(f"[XES SPACE] measuring")
+            return space_comp_profiler(func)(*args, **kwargs)  # Apply if True
+        else:
+            # print(f"[XES SPACE] NOT measuring")
+            return func(*args, **kwargs)  # Original function if False
+
+    return profile_wrapper
+
 
 class Parameters(Enum):
     COMPRESS = "compress"
     SHOW_PROGRESS_BAR = "show_progress_bar"
     ENCODING = "encoding"
+    MEASURE_SPACE_COMPLEXITY = "measure_space_complexity"
 
 
 # defines correspondence between Python types and XES types

@@ -101,6 +101,7 @@ DEFAULT_BUSINESS_HOURS_WORKCALENDAR = None
 
 SHOW_EVENT_LOG_DEPRECATION = True if get_param_from_env("PM4PY_SHOW_EVENT_LOG_DEPRECATION", "False").lower() == "true" else False
 SHOW_INTERNAL_WARNINGS = True if get_param_from_env("PM4PY_SHOW_INTERNAL_WARNINGS", "True").lower() == "true" else False
+MEASURE_SPACE_COMPLEXITY = False
 
 TRIGGERED_DT_PARSING_WARNING = False
 
